@@ -1,0 +1,64 @@
+<div class="col-9 mx-auto bg-white rounded ">
+	<div
+		class="col"
+		*ngIf="prods.length == 0"
+	>
+		<p class="display-5 fw-semibold">
+			Cart is Empty.
+		</p>
+	</div>
+	<div
+		class="col"
+		*ngFor="let prod of prods; index as i"
+	>
+		<div class="card px-4 py-3 d-flex flex-row">
+			<img
+				src="{{ prod.image }}"
+				width="150px"
+				height="150px"
+				alt=""
+				class="img-fluid"
+			/>
+			<div class="my-auto mx-5">
+				<p class="h5 fw-bold">{{ prod.title }}</p>
+
+				<p class="h6 fw-semibold">
+					Price: ${{ prod.price }}
+				</p>
+				<button
+					class="btn btn-danger"
+					(click)="productCart(i, 'remove')"
+				>
+					-
+				</button>
+				<span class="h6 fw-semibold mx-2">
+					{{ prod.amount }}
+				</span>
+				<button
+					class="btn btn-success"
+					(click)="productCart(i, 'add')"
+				>
+					+
+				</button>
+			</div>
+			<div class="col my-auto">
+				<p
+					class="display-6 fw-semibold float-end"
+				>
+					${{
+						prod.amount * prod.price
+							| number : "1.2-2"
+					}}
+				</p>
+			</div>
+		</div>
+	</div>
+	<div
+		class="col d-flex flex-row justify-content-between px-3 py-4"
+	>
+		<span class="h4 my-auto">Total Amount: </span>
+		<p class="display-4 my-auto">
+			${{ totalAmount | number : "1.2-2" }}
+		</p>
+	</div>
+</div>

@@ -1,0 +1,71 @@
+<div class="col-12 text-center"  >
+	<div
+		*ngFor="let product of products; index as i"
+		class="col-5 d-inline-block mx-2 my-4"
+	>
+		<mat-card>
+			<mat-card-header>
+				<mat-card-title class="fw-bold">
+					{{
+						product.title | uppercase
+					}}</mat-card-title
+				></mat-card-header
+			>
+			<img
+				mat-card-lg-image
+				src="{{ product.image }}"
+				class="mx-auto my-5"
+			/>
+			<mat-card-content>
+				<!-- <p>{{product.description}}</p> -->
+				<p
+					class="fw-semibold h2 d-inline float-start"
+				>
+					${{ product.price }}
+				</p>
+				<mat-card-actions
+					class="d-inline float-end"
+				>
+					<button
+						class="btn btn-primary rounded-pill fw-semibold"
+						*ngIf="!product.isAdd"
+						(click)="toggleCart(i)"
+					>
+						Add to Cart
+					</button>
+					<div *ngIf="product.isAdd">
+						<button
+							class="btn btn-danger"
+							(click)="productCart(i, 'remove')"
+						>
+							-
+						</button>
+						<span class="mx-3">{{
+							product.amount || 1
+						}}</span>
+						<button
+							class="btn btn-success"
+							(click)="productCart(i, 'add')"
+						>
+							+
+						</button>
+					</div>
+				</mat-card-actions>
+			</mat-card-content>
+		</mat-card>
+	</div>
+</div>
+<div class="col-12 justify-content-center d-flex">
+	<button *ngIf="pageId!=0"
+		class="btn btn-link"
+		(click)="page(0)"
+	>
+		Page 1
+	</button>
+	<button *ngIf="pageId!=1"
+		class="btn btn-link"
+		(click)="page(1)"
+	>
+		Page 2
+	</button>
+</div>

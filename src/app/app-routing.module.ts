@@ -13,7 +13,9 @@ const routes: Routes = [
 	},
 	{
 		path: "products",
-		component: ProductsComponent,
+		component: ProductsComponent,children:[
+			
+		]
 	},
 	{
 		path: "products/:id",

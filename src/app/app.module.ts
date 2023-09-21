@@ -8,6 +8,7 @@ import { CartComponent } from './cart/cart.component';
 import { HttpClientModule } from '@angular/common/http';
 import {MatCardModule} from '@angular/material/card'; 
 import {MatGridListModule} from '@angular/material/grid-list';
+import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import {MatGridListModule} from '@angular/material/grid-list';
     HeaderComponent,
     ProductsComponent,
     CartComponent,
+    LoaderComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,13 @@
-<div class="col-12 text-center"  >
+<div
+	class="col-1 mx-auto"
+	*ngIf="isLoading"
+>
+	<app-loader />
+</div>
+<div
+	class="col-12 text-center"
+	*ngIf="!isLoading"
+>
 	<div
 		*ngFor="let product of products; index as i"
 		class="col-5 d-inline-block mx-2 my-4"
@@ -55,17 +64,22 @@
 		</mat-card>
 	</div>
 </div>
-<div class="col-12 justify-content-center d-flex">
-	<button *ngIf="pageId!=0"
+<div
+	class="col-12 justify-content-center d-flex"
+	*ngIf="!isLoading"
+>
+	<button
+		*ngIf="pageId != 0"
 		class="btn btn-link"
-		(click)="page(0)"
+		(click)="page('previous')"
 	>
-		Page 1
+	<	Prev...
 	</button>
-	<button *ngIf="pageId!=1"
+	<button
+		*ngIf="pageId != 1"
 		class="btn btn-link"
-		(click)="page(1)"
+		(click)="page('next')"
 	>
-		Page 2
+		Next...>
 	</button>
 </div>

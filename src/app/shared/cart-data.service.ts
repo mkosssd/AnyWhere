@@ -17,42 +17,40 @@ export interface Product {
 	providedIn: "root",
 })
 export class CartDataService {
-	storedPro = localStorage.getItem("cart") || '{}';
-	prods = JSON.parse(this.storedPro) ;
+	storedPro =
+		localStorage.getItem("cart") || "[]";
+	prods = JSON.parse(this.storedPro);
 	cartdata: Product[] = this.prods;
 	@Output() items = new EventEmitter();
-	constructor() {}
-	data(product: Product, method:string) {
+	data(product: Product, method: string) {
 		const productExistInCart = this.cartdata.find(
 			({ id }) => id === product.id
-			);
-			console.log(productExistInCart);
-			
-			if (method === "add") {
-				if (!productExistInCart) {
-					this.cartdata.push({
-						...product,
-						amount: 1,
-					});
-				} else {
-					productExistInCart.amount += 1;
-				}
-			} else {
-				let index = this.cartdata.findIndex((p) => {
-					return p.id === product.id;
+		);
+		let index = this.cartdata.findIndex((p) => {
+			return p.id === product.id;
+		});
+
+		if (method === "add") {
+			if (!productExistInCart) {
+				this.cartdata.push({
+					...product,
+					amount: 1,
 				});
-				if (productExistInCart?.amount == 1) {
-					this.cartdata.splice(index, 1);
-				} else {
-					if (productExistInCart)
+			} else {
+				productExistInCart.amount += 1;
+			}
+		} else {
+			if (productExistInCart?.amount == 1) {
+				this.cartdata.splice(index, 1);
+			} else {
+				if (productExistInCart)
 					productExistInCart.amount -= 1;
 			}
-			console.log(this.cartdata);
 		}
 		localStorage.setItem(
 			"cart",
 			JSON.stringify(this.cartdata)
-			);
-			this.items.emit(this.cartdata.length);
-		}
+		);
+		this.items.emit(this.cartdata.length);
 	}
+}

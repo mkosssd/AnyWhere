@@ -37,7 +37,7 @@ export class ProductsComponent implements OnInit {
 		console.log(this.pageId);
 
 		let storedPro =
-			localStorage.getItem("cart") || "{}";
+			localStorage.getItem("cart") || "[]";
 		let prods = JSON.parse(storedPro);
 		let cart = prods;
 		this.http
@@ -66,8 +66,13 @@ export class ProductsComponent implements OnInit {
 				);
 			});
 	}
+	isLoading = false;
 	ngOnInit(): void {
+		this.isLoading = true;
 		this.getData();
+		setTimeout(() => {
+			this.isLoading = false;
+		}, 2000);
 	}
 	productCart(index: number, method: string) {
 		this.cartServ.data(
@@ -81,8 +86,21 @@ export class ProductsComponent implements OnInit {
 		this.products[index].isAdd =
 			!this.products[index].isAdd;
 	}
-	page(id: number) {
-		this.router.navigate(["products/" + id]);
+	page(method: string) {
+		this.isLoading=true
+		// this.router.navigate(["products/" + id]);
+		if (method === "next") {
+			this.pageId = 0;
+			this.router.navigate([
+				"products/" + this.pageId + 1,
+			]);
+		} else {
+			this.pageId = 1;
+			this.router.navigate([
+				"products/" + (+this.pageId - 1),
+			]);
+		}
 		this.getData();
+		this.isLoading=false
 	}
 }

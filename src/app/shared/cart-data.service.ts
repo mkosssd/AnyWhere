@@ -3,6 +3,7 @@ import {
 	Injectable,
 	Output,
 } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
 
 export interface Product {
 	id: number;
@@ -21,14 +22,14 @@ export class CartDataService {
 		localStorage.getItem("cart") || "[]";
 	prods = JSON.parse(this.storedPro);
 	cartdata: Product[] = this.prods;
+	cart$ = new BehaviorSubject(this.cartdata);
 	@Output() items = new EventEmitter();
+	constructor() {}
+	
 	data(product: Product, method: string) {
 		const productExistInCart = this.cartdata.find(
 			({ id }) => id === product.id
 		);
-		let index = this.cartdata.findIndex((p) => {
-			return p.id === product.id;
-		});
 
 		if (method === "add") {
 			if (!productExistInCart) {
@@ -40,6 +41,9 @@ export class CartDataService {
 				productExistInCart.amount += 1;
 			}
 		} else {
+			let index = this.cartdata.findIndex((p) => {
+				return p.id === product.id;
+			});
 			if (productExistInCart?.amount == 1) {
 				this.cartdata.splice(index, 1);
 			} else {
@@ -51,6 +55,7 @@ export class CartDataService {
 			"cart",
 			JSON.stringify(this.cartdata)
 		);
+		this.cart$.next(this.cartdata)
 		this.items.emit(this.cartdata.length);
 	}
 }

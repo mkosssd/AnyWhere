@@ -9,11 +9,10 @@ import {
 	ActivatedRoute,
 	Router,
 } from "@angular/router";
+import { ProductService } from "./products/product.service";
 
 @Injectable({ providedIn: "root" })
-export class ServiceNameService {
-	constructor(private httpClient: HttpClient) {}
-}
+export class ServiceNameService {}
 @Component({
 	selector: "app-products",
 	templateUrl: "./products.component.html",
@@ -24,56 +23,74 @@ export class ProductsComponent implements OnInit {
 		private http: HttpClient,
 		private cartServ: CartDataService,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
+		private productService: ProductService
 	) {}
 	products: any;
-	pageId: number;
+	pageId: number = 1;
 	prods: any;
+	isLoading: boolean = false;
 	produs: any;
+	totalPages: number;
+	pagesArray: number[];
+	indexArray: number[];
+	ngOnInit(): void {
+		this.getData();
+	}
 	getData() {
-		this.route.params.subscribe(
-			(res) => (this.pageId = res["id"])
-		);
-		console.log(this.pageId);
+		this.route.queryParams.subscribe((res) => {
+			this.pageId = res["page"];
+			console.log(res);
 
-		let storedPro =
-			localStorage.getItem("cart") || "[]";
-		let prods = JSON.parse(storedPro);
-		let cart = prods;
-		this.http
-			.get<Product[]>(
-				"http://localhost:3000/products"
-			)
-			.subscribe((res) => {
-				this.produs = res.map((val) => {
-					let index = cart.findIndex(
-						(c) => c.id === val.id
+			let storedPro =
+				localStorage.getItem("cart") || "[]";
+			this.prods = JSON.parse(storedPro);
+
+			this.productService
+				.getProducts()
+				.subscribe((res) => {
+					this.produs = res.map((val) => {
+						let index = this.prods.findIndex(
+							({ id }) => id === val.id
+						);
+
+						if (index >= 0) {
+							return {
+								...val,
+								isAdd: true,
+								amount: this.prods[index].amount,
+							};
+						} else {
+							return { ...val, isAdd: false };
+						}
+					});
+					console.log(this.pageId);
+
+					this.totalPages = Math.ceil(
+						this.produs.length / 10
+					);
+					this.pagesArray = Array.from(
+						{ length: this.totalPages },
+						(_, i) => i + 1
+					);
+					console.log(this.pagesArray);
+					let s = [];
+					this.pagesArray.map((page) =>
+						s.push((page - 1) * 10)
 					);
 
-					if (index >= 0) {
-						return {
-							...val,
-							isAdd: true,
-							amount: cart[index].amount,
-						};
-					} else {
-						return { ...val, isAdd: false };
-					}
+					this.isLoading = true;
+
+					this.products = this.produs.splice(
+						s[this.pageId - 1],
+						10
+					);
+
+					this.isLoading = false;
 				});
-				this.products = this.produs.splice(
-					this.pageId * 10,
-					10
-				);
-			});
+		});
 	}
-	isLoading = false;
-	ngOnInit(): void {
-		this.isLoading = true;
-		this.getData();
-		setTimeout(() => {
-			this.isLoading = false;
-		}, 2000);
-	}
+
 	productCart(index: number, method: string) {
 		this.cartServ.data(
 			this.products[index],
@@ -87,20 +104,31 @@ export class ProductsComponent implements OnInit {
 			!this.products[index].isAdd;
 	}
 	page(method: string) {
-		this.isLoading=true
-		// this.router.navigate(["products/" + id]);
-		if (method === "next") {
-			this.pageId = 0;
-			this.router.navigate([
-				"products/" + this.pageId + 1,
-			]);
-		} else {
+		if (isNaN(this.pageId)) {
+			console.log("yes");
 			this.pageId = 1;
-			this.router.navigate([
-				"products/" + (+this.pageId - 1),
-			]);
+		}
+		this.isLoading = true;
+		if (method === "next") {
+			this.router.navigate(["/products"], {
+				queryParams: { page: +this.pageId + 1 },
+			});
+		} else {
+			this.router.navigate(["/products"], {
+				queryParams: { page: +this.pageId - 1 },
+			});
 		}
 		this.getData();
-		this.isLoading=false
+		this.isLoading = false;
+	}
+	numbPage(page: any) {
+		this.isLoading = true;
+
+		this.router.navigate(["/products"], {
+			queryParams: { page: page },
+		});
+
+		this.getData();
+		this.isLoading = false;
 	}
 }

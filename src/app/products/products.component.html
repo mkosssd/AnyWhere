@@ -1,12 +1,26 @@
 <div
 	class="col-1 mx-auto"
-	*ngIf="isLoading"
+	*ngIf="!products || isLoading"
 >
 	<app-loader />
 </div>
+<div *ngIf="products && products.length === 0">
+	<p class="text-white display-5">
+		No Products here.
+	</p>
+	<p class="text-white">
+		Redirect to
+		<a
+			href="/products?page=1"
+			class="text-decoration-none text-info"
+			>page 1</a
+		>
+		?
+	</p>
+</div>
 <div
 	class="col-12 text-center"
-	*ngIf="!isLoading"
+	*ngIf="products || !isLoading"
 >
 	<div
 		*ngFor="let product of products; index as i"
@@ -66,20 +80,28 @@
 </div>
 <div
 	class="col-12 justify-content-center d-flex"
-	*ngIf="!isLoading"
+	*ngIf="products"
 >
-	<button
-		*ngIf="pageId != 0"
-		class="btn btn-link"
-		(click)="page('previous')"
+
+<button
+	class="btn btn-link" *ngIf="pageId>1"
+	(click)="page('prev')"
+>
+	<...Prev
+</button>
+<div *ngFor="let pages of pagesArray">
+	
+	<button *ngIf="pages!=pageId"
+	class="btn btn-link"
+	(click)="numbPage(pages)"
 	>
-	<	Prev...
-	</button>
-	<button
-		*ngIf="pageId != 1"
-		class="btn btn-link"
-		(click)="page('next')"
-	>
-		Next...>
-	</button>
+	{{ pages }}
+</button>
+</div>
+<button
+	class="btn btn-link" *ngIf="pageId!=totalPages"
+	(click)="page('next')"
+>
+	Next...>
+</button>
 </div>

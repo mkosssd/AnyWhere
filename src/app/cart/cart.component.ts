@@ -3,6 +3,7 @@ import {
 	CartDataService,
 	Product,
 } from "../shared/cart-data.service";
+import { provideCloudflareLoader } from "@angular/common";
 
 @Component({
 	selector: "app-cart",
@@ -10,23 +11,35 @@ import {
 	styleUrls: ["./cart.component.scss"],
 })
 export class CartComponent implements OnInit {
-	constructor(private cart: CartDataService) {}
-	prods: Product[] = [];
-  totalAmount = 0
-	ngOnInit(): void {
-		this.prods = this.cart.cartdata;
-    this.prods.map(res=>{
-      this.totalAmount+=res.amount*res.price
-    })
+	tableSync() {
+		this.cart.cart$.subscribe((res) => {
+			this.dataSource = res;
+		});
 	}
-  productCart(index: number, method: string) {
-    this.totalAmount=0
-    this.cart.data(
-      this.prods[index],
+	ngOnInit(): void {
+		this.tableSync();
+		this.prods = this.cart.cartdata;
+		// this.dataSource.push(...this.prods);
+	}
+	constructor(private cart: CartDataService) {}
+	dataSource: Product[];
+	prods:any;
+	displayedColumns: string[] = [
+		"image",
+		"title",
+		"amount",
+		"price",
+		"actions",
+		"total",
+	];
+	productCart(index: number, method: string) {
+		this.cart.data(
+			this.dataSource[index],
 			method
-      );
-      this.prods.map(res=>{
-        this.totalAmount+=res.amount*res.price
-      })
-    }
+		);
+		this.prods = this.cart.cartdata;
+		const newData = [...this.prods];
+		this.dataSource = newData;
+		
+	}
 }

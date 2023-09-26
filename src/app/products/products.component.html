@@ -40,7 +40,6 @@
 				class="mx-auto my-5"
 			/>
 			<mat-card-content>
-				<!-- <p>{{product.description}}</p> -->
 				<p
 					class="fw-semibold h2 d-inline float-start"
 				>
@@ -84,22 +83,22 @@
 >
 
 <button
-	class="btn btn-link" *ngIf="pageId>1"
+	class="btn text-white" *ngIf="pageId>1"
 	(click)="page('prev')"
 >
 	<...Prev
 </button>
 <div *ngFor="let pages of pagesArray">
 	
-	<button *ngIf="pages!=pageId"
-	class="btn btn-link"
+	<button
+	class="btn text-white"
 	(click)="numbPage(pages)"
 	>
 	{{ pages }}
 </button>
 </div>
 <button
-	class="btn btn-link" *ngIf="pageId!=totalPages"
+	class="btn text-white" *ngIf="pageId!=totalPages"
 	(click)="page('next')"
 >
 	Next...>

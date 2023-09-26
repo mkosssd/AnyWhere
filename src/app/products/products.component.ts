@@ -33,7 +33,6 @@ export class ProductsComponent implements OnInit {
 	produs: any;
 	totalPages: number;
 	pagesArray: number[];
-	indexArray: number[];
 	ngOnInit(): void {
 		this.getData();
 	}
@@ -69,20 +68,21 @@ export class ProductsComponent implements OnInit {
 					this.totalPages = Math.ceil(
 						this.produs.length / 10
 					);
+
 					this.pagesArray = Array.from(
 						{ length: this.totalPages },
 						(_, i) => i + 1
 					);
-					console.log(this.pagesArray);
-					let s = [];
+
+					let indexArray = [];
 					this.pagesArray.map((page) =>
-						s.push((page - 1) * 10)
+						indexArray.push((page - 1) * 10)
 					);
 
 					this.isLoading = true;
 
 					this.products = this.produs.splice(
-						s[this.pageId - 1],
+						indexArray[this.pageId - 1],
 						10
 					);
 

@@ -33,11 +33,13 @@ export class ProductsComponent implements OnInit {
 	pageId: number = 1;
 	prods: any;
 	isLoading: boolean = false;
+	resp: any;
 	produs: any;
 	totalPages: number;
 	pagesArray: number[];
 	categories: Categories[];
 	indexArray: number[];
+	sortMeth: string;
 	ngOnInit(): void {
 		this.getData();
 		this.getCategories();
@@ -46,7 +48,7 @@ export class ProductsComponent implements OnInit {
 	getData() {
 		this.route.queryParams.subscribe((res) => {
 			this.pageId = res["page"];
-
+			this.sortMeth = res["sort"];
 			let storedPro =
 				localStorage.getItem("cart") || "[]";
 			this.prods = JSON.parse(storedPro);
@@ -69,7 +71,6 @@ export class ProductsComponent implements OnInit {
 							return { ...val, isAdd: false };
 						}
 					});
-					console.log(this.pageId);
 
 					this.totalPages = Math.ceil(
 						this.produs.length / 10
@@ -86,7 +87,21 @@ export class ProductsComponent implements OnInit {
 					);
 
 					this.isLoading = true;
-
+					if (this.sortMeth) {
+						if (this.sortMeth === "asec") {
+							this.produs = this.produs.sort(
+								(a, b) => {
+									return a.price - b.price;
+								}
+							);
+						} else {
+							this.produs = this.produs.sort(
+								(a, b) => {
+									return b.price - a.price;
+								}
+							);
+						}
+					}
 					this.products = this.produs.splice(
 						this.indexArray[this.pageId - 1],
 						10
@@ -101,13 +116,16 @@ export class ProductsComponent implements OnInit {
 		this.route.queryParams.subscribe((res) => {
 			if (res["price_min"]) {
 				this.minValue = +res["price_min"];
-				this.maxValue = +res["price_max"]
+				this.maxValue = +res["price_max"];
+			} else {
+				this.minValue = 100;
+				this.maxValue = 1500;
 			}
-			
 		});
+		this.sortProducts(this.sortMeth);
 	}
 	minValue = 0;
-	maxValue=0;
+	maxValue = 0;
 	productCart(index: number, method: string) {
 		this.cartServ.data(
 			this.products[index],
@@ -129,16 +147,18 @@ export class ProductsComponent implements OnInit {
 		if (method === "next") {
 			this.router.navigate(["/products"], {
 				queryParams: { page: +this.pageId + 1 },
-				queryParamsHandling: "preserve",
+				queryParamsHandling: "merge",
 			});
 		} else {
 			this.router.navigate(["/products"], {
 				queryParams: { page: +this.pageId - 1 },
-				queryParamsHandling: "preserve",
+				queryParamsHandling: "merge",
 			});
 		}
+		this.sortProducts(this.sortMeth)
 		this.getData();
 		this.isLoading = false;
+		this.getCategories();
 	}
 	numbPage(page: any) {
 		this.isLoading = true;
@@ -175,16 +195,26 @@ export class ProductsComponent implements OnInit {
 				console.log(res);
 			});
 	}
+	defCategoryRoute = 0;
 	getCategories() {
 		this.productService
 			.getCategories()
-			.subscribe(
-				(res) =>
-					(this.categories = res.splice(0, 4))
-			);
+			.subscribe((res) => {
+				this.categories = res.splice(0, 4);
+
+				this.route.queryParams.subscribe(
+					(res) => {
+						let id = res["categoryId"];
+
+						let x = this.categories.find(
+							(e) => e.id === +id
+						);
+						if (x) this.defCategoryRoute = x.id;
+					}
+				);
+			});
 	}
 	categoryFilter(id: number) {
-		console.log(id);
 		this.router.navigate(["/products"], {
 			queryParams: {
 				categoryId: id,
@@ -196,5 +226,29 @@ export class ProductsComponent implements OnInit {
 			.subscribe((res) => {
 				this.products = res;
 			});
+	}
+	addSort(method){
+		this.router.navigate(["products"], {
+			queryParams: { sort: method },
+			queryParamsHandling: "merge",
+		});
+		this.sortProducts(method)
+	}
+	sortProducts(method: string) {
+		
+		if (method === "asec") {
+			this.products = this.produs.sort(
+				(a, b) => {
+					return a.price - b.price;
+				}
+			);
+		} else {
+			this.products = this.produs.sort(
+				(a, b) => {
+					return b.price - a.price;
+				}
+			);
+		}
+
 	}
 }

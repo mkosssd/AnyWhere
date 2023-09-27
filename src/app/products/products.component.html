@@ -4,55 +4,43 @@
 >
 	<app-loader />
 </div>
-<div *ngIf="products && products.length === 0">
-	<p class="text-white display-5">
-		No Products here.
-	</p>
-	<p class="text-white">
-		Redirect to
-		<a
-			href="/products?page=1"
-			class="text-decoration-none text-info"
-			>page 1</a
-		>
-		?
-	</p>
-</div>
+
 <div
 	class="container text-center"
 	*ngIf="products || !isLoading"
 >
 	<div class="row">
 		<div
-			class="col-2"
+			class="col-2 py-4"
 			id="filterBar"
 		>
-			<h1>
+			<h1 class="mb-5 h2 fw-semibold">
 				Filters <i class="bi bi-filter"></i>
 			</h1>
 			<div class="col-12">
 				<div
-					class="btn-group"
+					class="btn-group m-1"
 					role="group"
 					aria-label="Basic radio toggle button group"
 					*ngFor="let cat of categories"
+					(change)="categoryFilter(cat.id)"
 				>
 					<input
 						type="radio"
 						class="btn-check"
 						name="btnradio"
-						id={{cat.id}}
-						autocomplete="off"
-						(change)="categoryFilter(cat.id)"
-						
+						[checked]="
+						defCategoryRoute === cat.id ? true : false
+						"
+						id="{{ cat.id }}"
 					/>
 					<label
 						class="btn btn-outline-primary"
-						for={{cat.id}}
-						>{{cat.name}}</label
+						for="{{ cat.id }}"
+						>{{ cat.name }}</label
 					>
 				</div>
-				<div class="col-12 mx-auto my-3">
+				<div class="col-12 mx-auto my-5">
 					{{ minVal.value }}
 					<mat-slider
 						min="100"
@@ -63,12 +51,12 @@
 						"
 					>
 						<input
-							value={{minValue}}
+							value="{{ minValue }}"
 							matSliderStartThumb
 							#minVal
 						/>
 						<input
-							value={{maxValue}}
+							value="{{ maxValue }}"
 							matSliderEndThumb
 							#maxVal
 						/>
@@ -76,8 +64,57 @@
 					{{ maxVal.value }}
 				</div>
 			</div>
-		</div>
+			<div class="col-12  my-5">
+				<div
+					class="btn-group m-1"
+					role="group"
+					aria-label="Basic radio toggle button group"
+				>
+					<input
+						type="radio"
+						class="btn-check"
+						name="sortRadio"
+						id="sortAsec"
+						[checked]="sortMeth==='asec'?true:false"
+						/>
+						<label
+						(click)="addSort('asec')"
+						class="btn btn-outline-primary"
+						for="sortAsec"
+						>Sort by Price Aesc</label
+					>
+					<input
+						type="radio"
+						class="btn-check"
+						name="sortRadio"
+						id="sortDesc"
+						[checked]="sortMeth==='desc'?true:false"
 
+						/>
+						<label
+						(click)="addSort('desc')"
+						class="btn btn-outline-primary"
+						for="sortDesc"
+						>Sort by Price Desc</label
+					>
+				</div>
+			</div>
+		
+		</div>
+		<div *ngIf="products && products.length === 0">
+			<p class="text-white display-5">
+				No Products here.
+			</p>
+			<p class="text-white">
+				Redirect to
+				<a
+					href="/products?page=1"
+					class="text-decoration-none text-info"
+					>page 1</a
+				>
+				?
+			</p>
+		</div>
 		<div class="col-12">
 			<div
 				*ngFor="

@@ -70,12 +70,36 @@ export class ProductService {
 		this.actRoute.queryParams.subscribe(
 			(res) => (resp = res)
 		);
-		console.log(resp, "sdsd");
-    let url = `https://api.escuelajs.co/api/v1/products?offset=10&limit=50&categoryId=${resp.categoryId}`
-    console.log(url);
-    
-		return this.http.get<Product[]>(url
-			
-		);
+		let url = `https://api.escuelajs.co/api/v1/products?offset=10&limit=50&categoryId=${resp.categoryId}`;
+
+		return this.http.get<Product[]>(url);
+	}
+	resp: any;
+	sortProds() {
+		// console.log('sort called!');
+		
+		// this.http
+		// 	.get(
+		// 		"https://api.escuelajs.co/api/v1/products?offset=10&limit=50"
+		// 	)
+		// 	.subscribe((res) => {
+		// 		this.resp = res;
+
+		// 		this.actRoute.queryParams.subscribe(
+		// 			(res) => {
+
+		// 				if (res["sort"] === "asec") {
+		// 					 this.resp.sort((a, b) => {
+		// 						return a.price - b.price;
+		// 					});
+		// 				} else {
+		// 					 this.resp.sort((a, b) => {
+		// 						return b.price - a.price;
+		// 					});
+		// 				}
+		// 			}
+		// 		);
+		// 	});
+		// return this.resp;
 	}
 }

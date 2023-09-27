@@ -10,7 +10,10 @@ import {
 	Router,
 } from "@angular/router";
 import { ProductService } from "./products/product.service";
-
+export interface Categories {
+	id: number;
+	name: string;
+}
 @Injectable({ providedIn: "root" })
 export class ServiceNameService {}
 @Component({
@@ -33,13 +36,16 @@ export class ProductsComponent implements OnInit {
 	produs: any;
 	totalPages: number;
 	pagesArray: number[];
+	categories: Categories[];
+	indexArray: number[];
 	ngOnInit(): void {
 		this.getData();
+		this.getCategories();
 	}
+
 	getData() {
 		this.route.queryParams.subscribe((res) => {
 			this.pageId = res["page"];
-			console.log(res);
 
 			let storedPro =
 				localStorage.getItem("cart") || "[]";
@@ -74,23 +80,34 @@ export class ProductsComponent implements OnInit {
 						(_, i) => i + 1
 					);
 
-					let indexArray = [];
+					this.indexArray = [];
 					this.pagesArray.map((page) =>
-						indexArray.push((page - 1) * 10)
+						this.indexArray.push((page - 1) * 10)
 					);
 
 					this.isLoading = true;
 
 					this.products = this.produs.splice(
-						indexArray[this.pageId - 1],
+						this.indexArray[this.pageId - 1],
 						10
 					);
 
 					this.isLoading = false;
 				});
 		});
+		this.minValue = 0;
+		this.maxValue = 0;
+		this.getCategories();
+		this.route.queryParams.subscribe((res) => {
+			if (res["price_min"]) {
+				this.minValue = +res["price_min"];
+				this.maxValue = +res["price_max"]
+			}
+			
+		});
 	}
-
+	minValue = 0;
+	maxValue=0;
 	productCart(index: number, method: string) {
 		this.cartServ.data(
 			this.products[index],
@@ -112,10 +129,12 @@ export class ProductsComponent implements OnInit {
 		if (method === "next") {
 			this.router.navigate(["/products"], {
 				queryParams: { page: +this.pageId + 1 },
+				queryParamsHandling: "preserve",
 			});
 		} else {
 			this.router.navigate(["/products"], {
 				queryParams: { page: +this.pageId - 1 },
+				queryParamsHandling: "preserve",
 			});
 		}
 		this.getData();
@@ -126,9 +145,56 @@ export class ProductsComponent implements OnInit {
 
 		this.router.navigate(["/products"], {
 			queryParams: { page: page },
+			queryParamsHandling: "merge",
 		});
 
 		this.getData();
 		this.isLoading = false;
+	}
+
+	logger(min = 0, max = 1500) {
+		console.log(min);
+		console.log(max);
+		let pageNum = 0;
+		this.route.queryParams.subscribe((res) => {
+			pageNum = res["page"];
+		});
+		this.router.navigate(["/products"], {
+			queryParams: {
+				price_min: `${min}`,
+				price_max: `${max}`,
+			},
+			queryParamsHandling: "merge",
+		});
+		this.productService
+			.getPriceRange()
+			.subscribe((res) => {
+				this.products = res.splice(
+					this.indexArray[this.pageId - 1]
+				);
+				console.log(res);
+			});
+	}
+	getCategories() {
+		this.productService
+			.getCategories()
+			.subscribe(
+				(res) =>
+					(this.categories = res.splice(0, 4))
+			);
+	}
+	categoryFilter(id: number) {
+		console.log(id);
+		this.router.navigate(["/products"], {
+			queryParams: {
+				categoryId: id,
+			},
+			queryParamsHandling: "merge",
+		});
+		this.productService
+			.getProductByCategory()
+			.subscribe((res) => {
+				this.products = res;
+			});
 	}
 }

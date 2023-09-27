@@ -10,6 +10,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { LoaderComponent } from './loader/loader.component';
 import {MatTableModule} from '@angular/material/table'; 
+import {MatSliderModule} from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {MatTableModule} from '@angular/material/table';
     HttpClientModule,
     MatCardModule,
     MatGridListModule,
-    MatTableModule
+    MatTableModule,
+    MatSliderModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -19,88 +19,152 @@
 	</p>
 </div>
 <div
-	class="col-12 text-center"
+	class="container text-center"
 	*ngIf="products || !isLoading"
 >
-	<div
-		*ngFor="let product of products; index as i"
-		class="col-5 d-inline-block mx-2 my-4"
-	>
-		<mat-card>
-			<mat-card-header>
-				<mat-card-title class="fw-bold">
-					{{
-						product.title | uppercase
-					}}</mat-card-title
-				></mat-card-header
-			>
-			<img
-				mat-card-lg-image
-				src="{{ product.image }}"
-				class="mx-auto my-5"
-			/>
-			<mat-card-content>
-				<p
-					class="fw-semibold h2 d-inline float-start"
+	<div class="row">
+		<div
+			class="col-2"
+			id="filterBar"
+		>
+			<h1>
+				Filters <i class="bi bi-filter"></i>
+			</h1>
+			<div class="col-12">
+				<div
+					class="btn-group"
+					role="group"
+					aria-label="Basic radio toggle button group"
+					*ngFor="let cat of categories"
 				>
-					${{ product.price }}
-				</p>
-				<mat-card-actions
-					class="d-inline float-end"
-				>
-					<button
-						class="btn btn-primary rounded-pill fw-semibold"
-						*ngIf="!product.isAdd"
-						(click)="toggleCart(i)"
+					<input
+						type="radio"
+						class="btn-check"
+						name="btnradio"
+						id={{cat.id}}
+						autocomplete="off"
+						(change)="categoryFilter(cat.id)"
+						
+					/>
+					<label
+						class="btn btn-outline-primary"
+						for={{cat.id}}
+						>{{cat.name}}</label
 					>
-						Add to Cart
-					</button>
-					<div *ngIf="product.isAdd">
-						<button
-							class="btn btn-danger"
-							(click)="productCart(i, 'remove')"
+				</div>
+				<div class="col-12 mx-auto my-3">
+					{{ minVal.value }}
+					<mat-slider
+						min="100"
+						max="1500"
+						step="100"
+						(change)="
+							logger(+minVal.value, +maxVal.value)
+						"
+					>
+						<input
+							value={{minValue}}
+							matSliderStartThumb
+							#minVal
+						/>
+						<input
+							value={{maxValue}}
+							matSliderEndThumb
+							#maxVal
+						/>
+					</mat-slider>
+					{{ maxVal.value }}
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12">
+			<div
+				*ngFor="
+					let product of products;
+					index as i
+				"
+				class="col-5 d-inline-block mx-2 my-2"
+			>
+				<mat-card>
+					<mat-card-header>
+						<mat-card-title class="fw-bold">
+							{{
+								product.title | uppercase
+							}}</mat-card-title
+						></mat-card-header
+					>
+					<img
+						mat-card-lg-image
+						src="{{ product.images[0] }}"
+						class="mx-auto my-5"
+					/>
+					<mat-card-content>
+						<p
+							class="fw-semibold h2 d-inline float-start"
 						>
-							-
-						</button>
-						<span class="mx-3">{{
-							product.amount || 1
-						}}</span>
-						<button
-							class="btn btn-success"
-							(click)="productCart(i, 'add')"
+							${{ product.price }}
+						</p>
+						<mat-card-actions
+							class="d-inline float-end"
 						>
-							+
-						</button>
-					</div>
-				</mat-card-actions>
-			</mat-card-content>
-		</mat-card>
+							<button
+								class="btn btn-primary rounded-pill fw-semibold"
+								*ngIf="!product.isAdd"
+								(click)="toggleCart(i)"
+							>
+								Add to Cart
+							</button>
+							<div *ngIf="product.isAdd">
+								<button
+									class="btn btn-danger"
+									(click)="
+										productCart(i, 'remove')
+									"
+								>
+									-
+								</button>
+								<span class="mx-3">{{
+									product.amount || 1
+								}}</span>
+								<button
+									class="btn btn-success"
+									(click)="productCart(i, 'add')"
+								>
+									+
+								</button>
+							</div>
+						</mat-card-actions>
+					</mat-card-content>
+				</mat-card>
+			</div>
+		</div>
 	</div>
 </div>
 <div
 	class="col-12 justify-content-center d-flex"
 	*ngIf="products"
 >
-
-<button
-	class="btn text-white" *ngIf="pageId>1"
-	(click)="page('prev')"
->
-	<...Prev
-</button>
-<div *ngFor="let pages of pagesArray">
-	
 	<button
-	class="btn text-white"
-	(click)="numbPage(pages)"
+		class="btn text-white"
+		*ngIf="pageId > 1"
+		(click)="page('prev')"
 	>
-	{{ pages }}
-</button>
-</div>
-<button
-	class="btn text-white" *ngIf="pageId!=totalPages"
-	(click)="page('next')"
->
-	Next...>
-</button>
+		<...Prev
+	</button>
+	<div *ngFor="let pages of pagesArray">
+		<button
+			class="btn text-white"
+			(click)="numbPage(pages)"
+		>
+			{{ pages }}
+		</button>
+	</div>
+	<button
+		class="btn text-white"
+		*ngIf="pageId != totalPages"
+		(click)="page('next')"
+	>
+		Next...>
+	</button>
 </div>

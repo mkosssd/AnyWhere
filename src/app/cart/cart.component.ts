@@ -19,11 +19,13 @@ export class CartComponent implements OnInit {
 	ngOnInit(): void {
 		this.tableSync();
 		this.prods = this.cart.cartdata;
+		this.getTotal()
 		// this.dataSource.push(...this.prods);
 	}
 	constructor(private cart: CartDataService) {}
 	dataSource: Product[];
 	prods:any;
+	totalAmount:number
 	displayedColumns: string[] = [
 		"image",
 		"title",
@@ -40,6 +42,14 @@ export class CartComponent implements OnInit {
 		this.prods = this.cart.cartdata;
 		const newData = [...this.prods];
 		this.dataSource = newData;
+		this.getTotal()
+		
+	}
+	getTotal(){
+		this.totalAmount=0
+		this.prods.map(item=>{
+			this.totalAmount +=item.amount * item.price
+		})
 		
 	}
 }

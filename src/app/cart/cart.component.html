@@ -19,10 +19,11 @@
 		>
 	</p>
 </div>
+<div class="col-8 mx-auto">
 <table
 	mat-table
 	[dataSource]="dataSource"
-	class="mat-elevation-z8"
+	class="mat-elevation-z8 " 
 	*ngIf="dataSource.length > 0"
 >
 	<ng-container matColumnDef="image">
@@ -146,8 +147,9 @@
 		"
 	></tr>
 </table>
+</div>
 <footer
-	class="card py-4 container"
+	class="card py-4 col-8 mx-auto"
 	*ngIf="dataSource.length > 0"
 >
 	<div

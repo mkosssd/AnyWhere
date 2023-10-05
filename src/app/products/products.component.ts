@@ -37,9 +37,11 @@ export class ProductsComponent implements OnInit {
 	produs: any;
 	totalPages: number;
 	pagesArray: number[];
-	categories: Categories[];
+	categories: any;
 	indexArray: number[];
 	sortMeth: string;
+	minValue = 0;
+	maxValue = 0;
 	ngOnInit(): void {
 		this.getData();
 		this.getCategories();
@@ -52,10 +54,12 @@ export class ProductsComponent implements OnInit {
 			let storedPro =
 				localStorage.getItem("cart") || "[]";
 			this.prods = JSON.parse(storedPro);
-
+			this.defCategoryRoute=''
 			this.productService
 				.getProducts()
-				.subscribe((res) => {
+				.subscribe((res: Product[]) => {
+					console.log(res);
+					this.products = res;
 					this.produs = res.map((val) => {
 						let index = this.prods.findIndex(
 							({ id }) => id === val.id
@@ -86,22 +90,6 @@ export class ProductsComponent implements OnInit {
 						this.indexArray.push((page - 1) * 10)
 					);
 
-					this.isLoading = true;
-					if (this.sortMeth) {
-						if (this.sortMeth === "asec") {
-							this.produs = this.produs.sort(
-								(a, b) => {
-									return a.price - b.price;
-								}
-							);
-						} else {
-							this.produs = this.produs.sort(
-								(a, b) => {
-									return b.price - a.price;
-								}
-							);
-						}
-					}
 					this.products = this.produs.splice(
 						this.indexArray[this.pageId - 1],
 						10
@@ -118,14 +106,12 @@ export class ProductsComponent implements OnInit {
 				this.minValue = +res["price_min"];
 				this.maxValue = +res["price_max"];
 			} else {
-				this.minValue = 100;
-				this.maxValue = 1500;
+				this.minValue = 0;
+				this.maxValue = 1800;
 			}
 		});
-		this.sortProducts(this.sortMeth);
 	}
-	minValue = 0;
-	maxValue = 0;
+
 	productCart(index: number, method: string) {
 		this.cartServ.data(
 			this.products[index],
@@ -134,6 +120,8 @@ export class ProductsComponent implements OnInit {
 		this.getData();
 	}
 	toggleCart(index: number) {
+		console.log(index);
+
 		this.productCart(index, "add");
 		this.products[index].isAdd =
 			!this.products[index].isAdd;
@@ -155,10 +143,9 @@ export class ProductsComponent implements OnInit {
 				queryParamsHandling: "merge",
 			});
 		}
-		this.sortProducts(this.sortMeth)
 		this.getData();
-		this.isLoading = false;
 		this.getCategories();
+		this.isLoading = false;
 	}
 	numbPage(page: any) {
 		this.isLoading = true;
@@ -186,69 +173,50 @@ export class ProductsComponent implements OnInit {
 			},
 			queryParamsHandling: "merge",
 		});
-		this.productService
-			.getPriceRange()
-			.subscribe((res) => {
-				this.products = res.splice(
-					this.indexArray[this.pageId - 1]
-				);
-				console.log(res);
-			});
+		// this.productService
+		// 	.getPriceRange()
+		// 	.subscribe((res) => {
+		// 		this.products = res.splice(
+		// 			this.indexArray[this.pageId - 1]
+		// 		);
+		// 		console.log(res);
+		// 	});
 	}
-	defCategoryRoute = 0;
+	defCategoryRoute ='';
 	getCategories() {
 		this.productService
 			.getCategories()
-			.subscribe((res) => {
-				this.categories = res.splice(0, 4);
+			.subscribe((res: []) => {
+				this.categories = res.splice(0, 5);
 
 				this.route.queryParams.subscribe(
 					(res) => {
-						let id = res["categoryId"];
+						let id = res["category"];
 
-						let x = this.categories.find(
-							(e) => e.id === +id
+						let ind = this.categories.find(
+							(e) => e === id
 						);
-						if (x) this.defCategoryRoute = x.id;
+
+						if (ind){ this.defCategoryRoute = ind;}
 					}
 				);
 			});
+		console.log(this.defCategoryRoute);
 	}
-	categoryFilter(id: number) {
+	categoryFilter(val: string) {
 		this.router.navigate(["/products"], {
 			queryParams: {
-				categoryId: id,
+				category: val,
 			},
 			queryParamsHandling: "merge",
 		});
-		this.productService
-			.getProductByCategory()
-			.subscribe((res) => {
-				this.products = res;
-			});
+	
 	}
-	addSort(method){
+	addSort(method) {
 		this.router.navigate(["products"], {
 			queryParams: { sort: method },
 			queryParamsHandling: "merge",
 		});
-		this.sortProducts(method)
 	}
-	sortProducts(method: string) {
-		
-		if (method === "asec") {
-			this.products = this.produs.sort(
-				(a, b) => {
-					return a.price - b.price;
-				}
-			);
-		} else {
-			this.products = this.produs.sort(
-				(a, b) => {
-					return b.price - a.price;
-				}
-			);
-		}
-
-	}
+	
 }

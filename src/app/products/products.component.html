@@ -23,29 +23,28 @@
 					role="group"
 					aria-label="Basic radio toggle button group"
 					*ngFor="let cat of categories"
-					(change)="categoryFilter(cat.id)"
+					(change)="categoryFilter(cat)"
 				>
 					<input
 						type="radio"
 						class="btn-check"
 						name="btnradio"
-						[checked]="
-						defCategoryRoute === cat.id ? true : false
-						"
-						id="{{ cat.id }}"
+						[checked]="defCategoryRoute==cat?true:false"
+						id="{{ cat }}"
 					/>
 					<label
 						class="btn btn-outline-primary"
-						for="{{ cat.id }}"
-						>{{ cat.name }}</label
+						for="{{ cat }}"
+						>{{ cat |uppercase}}</label
 					>
 				</div>
 				<div class="col-12 mx-auto my-5">
-					{{ minVal.value }}
+					${{ minVal.value }}
 					<mat-slider
-						min="100"
-						max="1500"
+						min="0"
+						max="1800"
 						step="100"
+					
 						(change)="
 							logger(+minVal.value, +maxVal.value)
 						"
@@ -58,10 +57,11 @@
 						<input
 							value="{{ maxValue }}"
 							matSliderEndThumb
+
 							#maxVal
 						/>
 					</mat-slider>
-					{{ maxVal.value }}
+					${{ maxVal.value }}
 				</div>
 			</div>
 			<div class="col-12  my-5">
@@ -125,15 +125,14 @@
 			>
 				<mat-card>
 					<mat-card-header>
-						<mat-card-title class="fw-bold">
-							{{
-								product.title | uppercase
+						<mat-card-title class="fw-bold"> 
+							{{ product.title | uppercase
 							}}</mat-card-title
 						></mat-card-header
 					>
 					<img
 						mat-card-lg-image
-						src="{{ product.images[0] }}"
+						src="{{ product.images[0]}}"
 						class="mx-auto my-5"
 					/>
 					<mat-card-content>
@@ -190,7 +189,7 @@
 		<...Prev
 	</button>
 	<div *ngFor="let pages of pagesArray">
-		<button
+		<button *ngIf="totalPages!==1"
 			class="btn text-white"
 			(click)="numbPage(pages)"
 		>
@@ -199,7 +198,7 @@
 	</div>
 	<button
 		class="btn text-white"
-		*ngIf="pageId != totalPages"
+		*ngIf="pageId != totalPages && totalPages!==1"
 		(click)="page('next')"
 	>
 		Next...>

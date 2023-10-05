@@ -1,0 +1,203 @@
+<div class="container">
+	<div
+		class="col-6 bg-white mx-auto rounded px-3 py-4"
+	>
+		<form
+			[formGroup]="productForm"
+			(ngSubmit)="formHandler()"
+		>
+			<div class="col-12">
+				<label
+					for="title"
+					class="form-label"
+					>Title</label
+				>
+				<input
+					type="text"
+					formControlName="title"
+					class="form-control"
+					id="title"
+				/>
+        <span
+          class="small text-danger"
+          *ngIf="
+            !productForm.get('title').valid &&
+            productForm.get('title').touched
+          "
+        >
+          <span
+            class="small text-danger"
+            *ngIf="
+              productForm.get('title').errors[
+                'required'
+              ]
+            "
+          >
+            Title is required
+          </span>
+        </span>
+			</div>
+			<div class="col-12">
+				<label
+					for="category"
+					class="form-label"
+					>Category</label
+				>
+				<select
+					formControlName="category"
+					id="category"
+					class="form-select"
+				>
+					<option
+						*ngFor="let item of list"
+						[value]="item"
+					>
+						{{ item | uppercase }}
+					</option>
+				</select>
+        <span
+        class="small text-danger"
+        *ngIf="
+          !productForm.get('category').valid &&
+          productForm.get('category').touched
+        "
+      >
+        <span
+          class="small text-danger"
+          *ngIf="
+            productForm.get('category').errors[
+              'required'
+            ]
+          "
+        >
+          Category is required
+        </span>
+      </span>
+			</div>
+
+			<div class="col-12">
+				<label
+					for="images"
+					class="form-label"
+					>Image</label
+				>
+				<input
+					type="text"
+					formControlName="images"
+					class="form-control"
+					id="images"
+				/>
+        <span
+        class="small text-danger"
+        *ngIf="
+          !productForm.get('images').valid &&
+          productForm.get('images').touched
+        "
+      >
+        <span
+          class="small text-danger"
+          *ngIf="
+            productForm.get('images').errors[
+              'required'
+            ]
+          "
+        >
+          Image is required
+        </span>
+      </span>
+			</div>
+
+			<div class="col-12">
+				<label
+					for="price"
+					class="form-label"
+					>Price</label
+				>
+				<input 
+					type="text"
+					formControlName="price"
+					class="form-control"
+					id="price"
+				/>
+        <span
+        class="small text-danger"
+        *ngIf="
+          !productForm.get('price').valid &&
+          productForm.get('price').touched
+        "
+      >
+      <span
+        class="small text-danger"
+        *ngIf="
+          productForm.get('price').errors[
+            'pattern'
+          ]
+        "
+      >
+        Price should only contain numbers.
+      </span>
+        <span
+          class="small text-danger"
+          *ngIf="
+            productForm.get('price').errors[
+              'required'
+            ]
+          "
+        >
+          Price is required
+        </span>
+      </span>
+			</div>
+
+			<div class="col-12">
+				<label
+					for="stock"
+					class="form-label"
+					>Stock</label
+				>
+				<input
+					type="text"
+					formControlName="stock"
+					class="form-control"
+					id="stock"
+				/>
+        <span
+        class="small text-danger"
+        *ngIf="
+          !productForm.get('stock').valid &&
+          productForm.get('stock').touched
+        "
+      >
+      <span
+        class="small text-danger"
+        *ngIf="
+          productForm.get('stock').errors[
+            'pattern'
+          ]
+        "
+      >
+        Stock should only contain numbers.
+      </span>
+        <span
+          class="small text-danger"
+          *ngIf="
+            productForm.get('stock').errors[
+              'required'
+            ]
+          "
+        >
+          Stock is required
+        </span>
+      </span>
+			</div>
+
+			<div class="col my-2"></div>
+			<button
+				class="btn btn-success"
+				[disabled]="!productForm.valid"
+			>
+				Save
+			</button>
+		</form>
+	</div>
+</div>

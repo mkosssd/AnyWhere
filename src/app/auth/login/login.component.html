@@ -1,0 +1,50 @@
+<div class="container my-5">
+    <p class="fw-bold h6 my-0 text-secondary">WELCOME BACK</p>
+
+    <h1 class="display-5 fw-bold text-white my-0">
+        Account Login
+        <span class="text-primary fw-bolder display-3">.</span>
+    </h1>
+    <p class="h6 text-secondary my-2">Don't have an Account? <a class="text-decoration-none" href="/signup">Create New Account</a></p>
+
+    <div class=" col-xl-6 col-lg-6 col-md-10 col-sm-12 my-5  rounded"  id="box">
+
+        <form id="form" #authForm="ngForm" (ngSubmit)="formOp(authForm)">
+            
+            <span *ngIf="error" class="text-danger small">{{error}}</span>
+            <div class="col-11">
+                <label for="email" class="col-sm-5 col-form-label fw-semibold">Email</label>
+                <input
+                type="email"
+                class="form-control rounded-4 py-3"
+                id="Email"
+                ngModel name="email"
+                placeholder="Enter Email"
+                email
+                required
+                >
+            </div>
+          
+            <div class="col-11" >
+                <label for="password" class="col-sm-5 col-form-label fw-semibold">Password</label>
+                <input
+                type="password"
+                class="form-control rounded-4 py-3"
+                id="password"
+                ngModel name="password"
+                placeholder="Enter Password"
+                required
+                password
+                minlength="8"
+                >
+            </div>
+            <div class="col-11 justify-content-between d-flex my-4 px-4">
+                <a class="btn btn-secondary fw-bold col-5 my-3  py-3 rounded-pill px-2" href="/signup">Change Method</a>
+                <button class="btn btn-primary col-5 my-3 rounded-pill py-3 px-2 fw-bold" type="submit" id="signup" [disabled]="!authForm.valid">Next</button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

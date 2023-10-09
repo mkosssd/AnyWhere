@@ -133,8 +133,9 @@ export class ProductService {
 	}
 
 	getCategories() {
-		return this.http.get(
-			"https://dummyjson.com/products/categories"
-		);
+		return this.firestore
+      .collection('categories')
+      .doc('UhXnpCPXIasl4tEGsBu7')
+      .valueChanges()
 	}
 }

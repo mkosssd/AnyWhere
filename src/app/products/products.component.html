@@ -1,107 +1,109 @@
-<div
-	class="col-1 mx-auto"
-	*ngIf="!products || isLoading"
->
-	<app-loader />
-</div>
 
 <div
-	class="container text-center"
+	class="container-fluid text-center"
 	*ngIf="products || !isLoading"
->
+	>
 	<div class="row">
 		<div
-			class="col-2 py-4"
-			id="filterBar"
+		class="col-2 py-4 h-100 ms-0 rounded"
+		id="filterBar"
+		*ngIf="products || isLoading"
 		>
-			<h1 class="mb-5 h2 fw-semibold">
-				Filters <i class="bi bi-filter"></i>
-			</h1>
-			<div class="col-12">
-				<div
+		<h1 class="mb-5 h2 fw-semibold">
+			Filters <i class="bi bi-filter"></i>
+		</h1>
+		<div class="col-12">
+			<div
 					class="btn-group m-1"
 					role="group"
 					aria-label="Basic radio toggle button group"
 					*ngFor="let cat of categories"
 					(change)="categoryFilter(cat)"
-				>
+					>
 					<input
-						type="radio"
-						class="btn-check"
-						name="btnradio"
-						[checked]="defCategoryRoute==cat?true:false"
+					type="radio"
+					class="btn-check"
+					name="btnradio"
+					[checked]="
+					defCategoryRoute == cat
+					? true
+					: false
+						"
 						id="{{ cat }}"
 					/>
 					<label
-						class="btn btn-outline-primary"
-						for="{{ cat }}"
-						>{{ cat |uppercase}}</label
+					class="btn btn-outline-primary"
+					for="{{ cat }}"
+					>{{ cat | uppercase }}</label
 					>
 				</div>
 				<div class="col-12 mx-auto my-5">
 					${{ minVal.value }}
 					<mat-slider
-						min="0"
-						max="1800"
-						step="100"
-					
-						(change)="
-							logger(+minVal.value, +maxVal.value)
-						"
+					min="0"
+					max="1800"
+					step="100"
+					(change)="
+					logger(+minVal.value, +maxVal.value)
+					"
 					>
-						<input
-							value="{{ minValue }}"
-							matSliderStartThumb
-							#minVal
-						/>
-						<input
-							value="{{ maxValue }}"
-							matSliderEndThumb
-
-							#maxVal
+					<input
+					value="{{ minValue }}"
+					matSliderStartThumb
+					#minVal
+					/>
+					<input
+					value="{{ maxValue }}"
+					matSliderEndThumb
+					#maxVal
 						/>
 					</mat-slider>
 					${{ maxVal.value }}
 				</div>
 			</div>
-			<div class="col-12  my-5">
+			<div class="col-12 my-5">
 				<div
 					class="btn-group m-1"
 					role="group"
 					aria-label="Basic radio toggle button group"
-				>
+					>
 					<input
-						type="radio"
-						class="btn-check"
-						name="sortRadio"
+					type="radio"
+					class="btn-check"
+					name="sortRadio"
 						id="sortAsec"
-						[checked]="sortMeth==='asec'?true:false"
+						[checked]="
+						sortMeth === 'asec' ? true : false
+						"
 						/>
 						<label
 						(click)="addSort('asec')"
 						class="btn btn-outline-primary"
 						for="sortAsec"
 						>Sort by Price Aesc</label
-					>
-					<input
+						>
+						<input
 						type="radio"
 						class="btn-check"
 						name="sortRadio"
 						id="sortDesc"
-						[checked]="sortMeth==='desc'?true:false"
-
+						[checked]="
+						sortMeth === 'desc' ? true : false
+						"
 						/>
 						<label
 						(click)="addSort('desc')"
 						class="btn btn-outline-primary"
 						for="sortDesc"
 						>Sort by Price Desc</label
-					>
+						>
+					</div>
 				</div>
 			</div>
 		
-		</div>
-		<div *ngIf="products && products.length === 0">
+		<div
+			*ngIf="products && products.length === 0"
+		>
 			<p class="text-white display-5">
 				No Products here.
 			</p>
@@ -115,7 +117,9 @@
 				?
 			</p>
 		</div>
-		<div class="col-12">
+
+		
+		<div class="col-8 mx-auto ">
 			<div
 				*ngFor="
 					let product of products;
@@ -125,14 +129,15 @@
 			>
 				<mat-card>
 					<mat-card-header>
-						<mat-card-title class="fw-bold"> 
-							{{ product.title | uppercase
+						<mat-card-title class="fw-bold">
+							{{
+								product.title | uppercase
 							}}</mat-card-title
 						></mat-card-header
 					>
 					<img
 						mat-card-lg-image
-						src="{{ product.images[0]}}"
+						src="{{ product.images[0] }}"
 						class="mx-auto my-5"
 					/>
 					<mat-card-content>
@@ -141,11 +146,13 @@
 						>
 							${{ product.price }}
 						</p>
+						
 						<mat-card-actions
 							class="d-inline float-end"
-						>
+						> <div *ngIf="product.stock!=0">
+
 							<button
-								class="btn btn-primary rounded-pill fw-semibold"
+							class="btn btn-primary rounded-pill fw-semibold"
 								*ngIf="!product.isAdd"
 								(click)="toggleCart(i)"
 							>
@@ -156,20 +163,37 @@
 									class="btn btn-danger"
 									(click)="
 										productCart(i, 'remove')
-									"
+										"
 								>
-									-
-								</button>
+								-
+							</button>
 								<span class="mx-3">{{
 									product.amount || 1
 								}}</span>
 								<button
-									class="btn btn-success"
-									(click)="productCart(i, 'add')"
+								[disabled]="
+								product.amount ==
+								product.stock
+								"
+								class="btn btn-success"
+								(click)="productCart(i, 'add')"
 								>
-									+
-								</button>
-							</div>
+								+
+							</button>
+						</div>
+					</div>
+								<span
+									class="text-black"
+									*ngIf="
+										product.amount == product.stock
+									"
+									>Max Stock</span
+								>
+								<span
+									class="text-black"
+									*ngIf="product.stock == 0"
+									>Out of Stock</span
+								>
 						</mat-card-actions>
 					</mat-card-content>
 				</mat-card>
@@ -177,6 +201,12 @@
 		</div>
 	</div>
 </div>
+<div
+		class="col-1 mx-auto"
+		*ngIf="!products || isLoading"
+	>
+		<app-loader />
+	</div>
 <div
 	class="col-12 justify-content-center d-flex"
 	*ngIf="products"
@@ -189,7 +219,8 @@
 		<...Prev
 	</button>
 	<div *ngFor="let pages of pagesArray">
-		<button *ngIf="totalPages!==1"
+		<button
+			*ngIf="totalPages !== 1"
 			class="btn text-white"
 			(click)="numbPage(pages)"
 		>
@@ -198,7 +229,9 @@
 	</div>
 	<button
 		class="btn text-white"
-		*ngIf="pageId != totalPages && totalPages!==1"
+		*ngIf="
+			pageId != totalPages && totalPages !== 1
+		"
 		(click)="page('next')"
 	>
 		Next...>

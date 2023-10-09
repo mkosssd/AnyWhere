@@ -22,17 +22,13 @@ import {
 	provideFirebaseApp,
 } from "@angular/fire/app";
 import { environment } from "../enviroments/enviroments";
-import { AdminPanelComponent } from "./admin-panel/admin-panel.component";
 import {
 	FormsModule,
 	ReactiveFormsModule,
 } from "@angular/forms";
 import { LoginComponent } from "./auth/login/login.component";
 import { SignUpComponent } from "./auth/sign-up/sign-up.component";
-import { AddProductComponent } from "./admin-panel/add-product/add-product.component";
-import { ProductListComponent } from "./admin-panel/product-list/product-list.component";
-import { AddCategoryComponent } from "./admin-panel/add-category/add-category.component";
-import { EditProductComponent } from './admin-panel/edit-product/edit-product.component';
+import { OrderComponent } from './order/order.component';
 
 @NgModule({
 	declarations: [
@@ -41,13 +37,10 @@ import { EditProductComponent } from './admin-panel/edit-product/edit-product.co
 		ProductsComponent,
 		CartComponent,
 		LoaderComponent,
-		AdminPanelComponent,
 		LoginComponent,
 		SignUpComponent,
-		AddProductComponent,
-		ProductListComponent,
-		AddCategoryComponent,
-  EditProductComponent,
+  OrderComponent,
+	
 	],
 	imports: [
 		BrowserModule,

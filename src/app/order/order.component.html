@@ -1,0 +1,155 @@
+<div class="container mt-3">
+        <div
+            class="col-6 bg-white mx-auto rounded px-3 py-4"
+        >
+            <form
+                [formGroup]="orderForm"
+                (ngSubmit)="formHandler()"
+            >
+                <div class="col-12">
+                    <label
+                        for="name"
+                        class="form-label"
+                        >Name</label
+                    >
+                    <input
+                        type="text"
+                        formControlName="name"
+                        class="form-control"
+                        id="name"
+                    />
+            <span
+              class="small text-danger"
+              *ngIf="
+                !orderForm.get('name').valid &&
+                orderForm.get('name').touched
+              "
+            >
+              <span
+                class="small text-danger"
+                *ngIf="
+                  orderForm.get('name').errors[
+                    'required'
+                  ]
+                "
+              >
+                Name is required
+              </span>
+            </span>
+                </div>
+                <div class="col-12">
+                  <label
+                      for="email"
+                      class="form-label"
+                      >Email</label
+                  >
+                  <input
+                  type="text"
+                  formControlName="email"
+                  class="form-control"
+                  id="email"
+              />
+          <span
+          class="small text-danger"
+          *ngIf="
+            !orderForm.get('email').valid &&
+            orderForm.get('email').touched
+          "
+        >
+          <span
+            class="small text-danger"
+            *ngIf="
+              orderForm.get('email').errors[
+                'required'
+              ]
+            "
+          >
+            Email is required
+          </span>
+          <span
+          class="small text-danger"
+          *ngIf="orderForm.get('email').errors['email']"
+        >
+          Enter a valid Email
+        </span>
+        </span>
+              </div>
+                <div class="col-12">
+                    <label
+                        for="address"
+                        class="form-label"
+                        >Address</label
+                    >
+                    <input
+                    type="text"
+                    formControlName="address"
+                    class="form-control"
+                    id="address"
+                />
+            <span
+            class="small text-danger"
+            *ngIf="
+              !orderForm.get('address').valid &&
+              orderForm.get('address').touched
+            "
+          >
+            <span
+              class="small text-danger"
+              *ngIf="
+                orderForm.get('address').errors[
+                  'required'
+                ]
+              "
+            >
+              Address is required
+            </span>
+          </span>
+                </div>
+    
+                <div class="col-12">
+                    <label
+                        for="contact"
+                        class="form-label"
+                        >Contact</label
+                    >
+                    <input
+                        type="text"
+                        formControlName="contact"
+                        class="form-control"
+                        id="contact"
+                    />
+            <span
+            class="small text-danger"
+            *ngIf="
+              !orderForm.get('contact').valid &&
+              orderForm.get('contact').touched
+            "
+          >
+            <span
+              class="small text-danger"
+              *ngIf="
+                orderForm.get('contact').errors[
+                  'required'
+                ]
+              "
+            >
+              Contact is required
+            </span>
+          </span>
+                </div>
+    
+                
+    
+                <div class="col my-2"></div>
+                <button
+                    class="btn btn-success"
+                    [disabled]="!orderForm.valid"
+                >
+                    Edit
+                </button>
+            </form>
+          
+        </div>
+    </div>
+    
+

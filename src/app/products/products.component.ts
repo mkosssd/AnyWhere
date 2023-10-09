@@ -1,4 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import {
+	Component,
+	OnInit,
+	OnDestroy,
+} from "@angular/core";
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {
@@ -10,6 +14,7 @@ import {
 	Router,
 } from "@angular/router";
 import { ProductService } from "./products/product.service";
+import { Subscription } from "rxjs";
 export interface Categories {
 	id: number;
 	name: string;
@@ -21,7 +26,9 @@ export class ServiceNameService {}
 	templateUrl: "./products.component.html",
 	styleUrls: ["./products.component.scss"],
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent
+	implements OnInit, OnDestroy
+{
 	constructor(
 		private http: HttpClient,
 		private cartServ: CartDataService,
@@ -29,6 +36,7 @@ export class ProductsComponent implements OnInit {
 		private router: Router,
 		private productService: ProductService
 	) {}
+	ObsSubs: Subscription;
 	products: any;
 	pageId: number = 1;
 	prods: any;
@@ -46,7 +54,10 @@ export class ProductsComponent implements OnInit {
 		this.getData();
 		this.getCategories();
 	}
+	ngOnDestroy(): void {
+		this.ObsSubs.unsubscribe();
 
+	}
 	getData() {
 		this.route.queryParams.subscribe((res) => {
 			this.pageId = res["page"];
@@ -54,11 +65,11 @@ export class ProductsComponent implements OnInit {
 			let storedPro =
 				localStorage.getItem("cart") || "[]";
 			this.prods = JSON.parse(storedPro);
-			this.defCategoryRoute=''
-			this.productService
+			this.defCategoryRoute = "";
+			this.ObsSubs = this.productService
 				.getProducts()
 				.subscribe((res: Product[]) => {
-					console.log(res);
+					// console.log(res);
 					this.products = res;
 					this.produs = res.map((val) => {
 						let index = this.prods.findIndex(
@@ -110,6 +121,7 @@ export class ProductsComponent implements OnInit {
 				this.maxValue = 1800;
 			}
 		});
+		
 	}
 
 	productCart(index: number, method: string) {
@@ -143,7 +155,7 @@ export class ProductsComponent implements OnInit {
 				queryParamsHandling: "merge",
 			});
 		}
-		this.getData();
+		// this.getData();
 		this.getCategories();
 		this.isLoading = false;
 	}
@@ -155,7 +167,7 @@ export class ProductsComponent implements OnInit {
 			queryParamsHandling: "merge",
 		});
 
-		this.getData();
+		// this.getData();
 		this.isLoading = false;
 	}
 
@@ -173,21 +185,13 @@ export class ProductsComponent implements OnInit {
 			},
 			queryParamsHandling: "merge",
 		});
-		// this.productService
-		// 	.getPriceRange()
-		// 	.subscribe((res) => {
-		// 		this.products = res.splice(
-		// 			this.indexArray[this.pageId - 1]
-		// 		);
-		// 		console.log(res);
-		// 	});
+	
 	}
-	defCategoryRoute ='';
+	defCategoryRoute = "";
 	getCategories() {
-		this.productService
-			.getCategories()
-			.subscribe((res: []) => {
-				this.categories = res.splice(0, 5);
+		this.productService.getCategories().subscribe((res: any) => {
+			this.categories = Object.values(res);
+		
 
 				this.route.queryParams.subscribe(
 					(res) => {
@@ -197,11 +201,12 @@ export class ProductsComponent implements OnInit {
 							(e) => e === id
 						);
 
-						if (ind){ this.defCategoryRoute = ind;}
+						if (ind) {
+							this.defCategoryRoute = ind;
+						}
 					}
 				);
 			});
-		console.log(this.defCategoryRoute);
 	}
 	categoryFilter(val: string) {
 		this.router.navigate(["/products"], {
@@ -210,7 +215,6 @@ export class ProductsComponent implements OnInit {
 			},
 			queryParamsHandling: "merge",
 		});
-	
 	}
 	addSort(method) {
 		this.router.navigate(["products"], {

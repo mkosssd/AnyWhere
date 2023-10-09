@@ -12,7 +12,78 @@
       <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
           <span id="" class="text-danger"></span>
-          
+          <div class="col-11 d-flex justify-content-between">
+            <div class="col-5">
+              <div class="form-group" [class.has-error]="">
+                <label for="firstName" class="col-sm-5 col-form-label fw-semibold"
+                  >First Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control rounded-4 py-3"
+                  id="firstName"
+                  formControlName="firstName"
+                  placeholder="Enter First Name"
+                  required
+                />
+              </div>
+              <span
+                class="small text-danger"
+                *ngIf="
+                  !authForm.get('firstName').valid &&
+                  authForm.get('firstName').touched
+                "
+              >
+                <span
+                  class="small text-danger"
+                  *ngIf="authForm.get('firstName').errors['pattern']"
+                >
+                  Name cannot contain numbers.
+                </span>
+                <span
+                  class="small text-danger"
+                  *ngIf="authForm.get('firstName').errors['required']"
+                >
+                  First Name is required
+                </span>
+              </span>
+            </div>
+            <div class="col-5">
+              <div class="form-group" [class.has-error]="">
+                <label for="lastName" class="col-sm-5 col-form-label fw-semibold"
+                  >Last Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control rounded-4 py-3"
+                  id="lastName"
+                  formControlName="lastName"
+                  placeholder="Enter Last Name"
+                  required
+                />
+              </div>
+              <span
+                class="small text-danger"
+                *ngIf="
+                  !authForm.get('lastName').valid &&
+                  authForm.get('lastName').touched
+                "
+              >
+                <span
+                  class="small text-danger"
+                  *ngIf="authForm.get('lastName').errors['pattern']"
+                >
+                  Name cannot contain numbers.
+                </span>
+                <span
+                  class="small text-danger"
+                  *ngIf="authForm.get('lastName').errors['required']"
+                >
+                  Last Name is required
+                </span>
+              </span>
+            </div>
+          </div>
           <div class="col-11">
             <div class="form-group" [class.has-error]="">
               <label for="email" class="col-sm-5 col-form-label fw-semibold"

@@ -23,7 +23,14 @@ export class SignUpComponent {
   numEx = /^[A-Za-z]+$/;
   ngOnInit(): void {
     this.authForm = new FormGroup({
-     
+     firstName: new FormControl(null, [
+        Validators.required,
+        Validators.pattern(this.numEx),
+      ]),
+      lastName: new FormControl(null, [
+        Validators.required,
+        Validators.pattern(this.numEx),
+      ]),
       email: new FormControl(null, [Validators.required, Validators.email]),
       inputPassword: new FormControl(null, [
         Validators.required,

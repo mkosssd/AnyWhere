@@ -3,7 +3,8 @@ import {
 	CartDataService,
 	Product,
 } from "../shared/cart-data.service";
-import { provideCloudflareLoader } from "@angular/common";
+import { Router } from "@angular/router";
+import { AuthService } from "../auth/auth.service";
 
 @Component({
 	selector: "app-cart",
@@ -11,21 +12,9 @@ import { provideCloudflareLoader } from "@angular/common";
 	styleUrls: ["./cart.component.scss"],
 })
 export class CartComponent implements OnInit {
-	tableSync() {
-		this.cart.cart$.subscribe((res) => {
-			this.dataSource = res;
-		});
-	}
-	ngOnInit(): void {
-		this.tableSync();
-		this.prods = this.cart.cartdata;
-		this.getTotal()
-		// this.dataSource.push(...this.prods);
-	}
-	constructor(private cart: CartDataService) {}
 	dataSource: Product[];
-	prods:any;
-	totalAmount:number
+	prods: any;
+	totalAmount: number;
 	displayedColumns: string[] = [
 		"image",
 		"title",
@@ -34,6 +23,21 @@ export class CartComponent implements OnInit {
 		"actions",
 		"total",
 	];
+	ngOnInit(): void {
+		this.tableSync();
+		this.prods = this.cart.cartdata;
+		this.getTotal();
+	}
+	constructor(
+		private cart: CartDataService,
+		private router: Router,
+		private auth: AuthService
+	) {}
+	tableSync() {
+		this.cart.cart$.subscribe((res) => {
+			this.dataSource = res;
+		});
+	}
 	productCart(index: number, method: string) {
 		this.cart.data(
 			this.dataSource[index],
@@ -42,14 +46,31 @@ export class CartComponent implements OnInit {
 		this.prods = this.cart.cartdata;
 		const newData = [...this.prods];
 		this.dataSource = newData;
-		this.getTotal()
-		
+		this.getTotal();
 	}
-	getTotal(){
-		this.totalAmount=0
-		this.prods.map(item=>{
-			this.totalAmount +=item.amount * item.price
-		})
-		
+	getTotal() {
+		this.totalAmount = 0;
+		this.prods.map((item) => {
+			this.totalAmount +=
+				item.amount * item.price;
+		});
+	}
+	onOrder = null;
+	placeOrderHandler() {
+		this.auth.user.subscribe((res) => {
+			if (res) {
+				this.onOrder =
+					"Redirecting to Order page...";
+				setTimeout(() => {
+					this.router.navigate(["order"]);
+				}, 300);
+			} else {
+				this.onOrder =
+					"User not logged in.Redirecting to Login page...";
+				setTimeout(() => {
+					this.router.navigate(["login"]);
+				}, 300);
+			}
+		});
 	}
 }
